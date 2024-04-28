@@ -1,54 +1,46 @@
-const http = require('http');
-const { title } = require('process');
-const server = http.createServer((request, response) => {
-  const data = {
-    id: 1,
-    title: '关山月',
-    content: '明月出天山，苍茫云海间'
-  }
+const express = require('express');
+const app = express();
 
-  const jsonData = JSON.stringify(data);
+const port = 3000;
 
-  response.writeHead(200, {
-    'Content-Type': 'application/json; charset=utf-8'
-  });
-
-  response.write(jsonData);
-
-  response.end();
+app.listen(port, () => {
+  console.log('🚀 服务已启动！');
 });
 
-// const server = http.createServer((request, response) => {
-//   switch (request.url) {
-//     case '/':
-//       response.write('hello~ ');
-//       break;
-//     case '/posts':
-//       response.write('posts');
-//       break;
-//     case '/signup':
-//       response.write('signup');
-//       break;
-//     default:
-//       response.writeHead(404);
-//       response.write('404');
-//       break;
-//   }
-//   response.end()
-// })
+app.get('/', (request, response) => {
+  response.send("你好")
+});
 
+const data = [
+  {
+    id: 1,
+    title: '关山月',
+    contenet: '明月出天山，苍茫云海间'
+  },
+  {
+    id: 2,
+    title: '望岳',
+    contenet: '会当凌绝顶，一览众山小'
+  },
+  {
+    id: 3,
+    title: '忆江南',
+    contenet: '日出江花红胜火，春来江水绿如蓝'
+  }
+];
 
-// const server = http.createServer((request, response) => {
-//   console.log(request.headers['user-agent']);
+app.get('/posts', (request, response) => {
+  response.send(data);
+});
 
-//   response.writeHead(200, {
-//     'Content-Type': 'text/html',
-//   })
+app.get('/posts/:postId', (request, response) => {
+  // 获取内容 ID
+  const { postId } = request.params;
 
-//   response.write(`<input />`);
-//   response.end();
-// });
+  // 查找具体内容
+  const posts = data.filter(item => item.id == postId);
 
-server.listen(3000, () => {
-  console.log('🚀 服务已启动！');
-})
+  // 做出响应
+  response.send(posts[0]);
+
+});
